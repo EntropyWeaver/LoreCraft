@@ -1,0 +1,29 @@
+{
+  "title": "Turno de noche en la estación Kepler",
+  "brief": "Una estación orbital está casi vacía. El jugador llega al taller durante un apagón parcial y encuentra a una ingeniera reparando un transmisor.",
+  "style_preferences": {
+    "language": "es",
+    "tone": "cercano, atmosférico, humor sutil",
+    "default_max_words": 220
+  },
+  "selected_character_cards": [
+    {
+      "key": "iria",
+      "name": "Iria",
+      "identity": "Ingeniera de sistemas, 34 años",
+      "traits": [
+        "observadora",
+        "independiente",
+        "irónica cuando está nerviosa"
+      ],
+      "voice": "Frases naturales; humor seco ocasional; evita explicar lo obvio",
+      "immediate_goal": "Restablecer el transmisor antes del siguiente contacto",
+      "relationship_to_player": "Se conocen de vista",
+      "known_facts": [
+        "El apagón empezó en el anillo de comunicaciones"
+      ],
+      "private_secrets": []
+    }
+  ],
+  "imported_fiction_memories": []
+}

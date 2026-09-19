@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "motor-ficcion"
+version = "0.2.0"
+description = "LoreCraft: ficción interactiva con LangGraph y memoria selectiva"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "langgraph>=1.2.11,<2", "langgraph-checkpoint-sqlite>=3.1.1,<4",
+  "langchain-core>=1.6.2,<2", "pydantic>=2.10,<3", "httpx[socks]>=0.28,<1", "python-dotenv>=1,<2"
+]
+
+[project.optional-dependencies]
+ui = ["streamlit>=1.45,<2"]
+test = ["pytest>=8,<10"]
+openai = ["langchain-openai>=1.6.2,<2", "tiktoken>=0.14,<1"]
+lmstudio = ["lmstudio>=1.5,<2"]
+hf = ["transformers>=4.45,<6"]
+
+[project.scripts]
+ficcion = "ficcion.cli:main"
+
+[project.urls]
+Repository = "https://github.com/EntropyWeaver/LoreCraft"
+Documentation = "https://github.com/EntropyWeaver/LoreCraft#readme"
+
+[tool.setuptools.packages.find]
+include = ["ficcion*"]
+
+[tool.setuptools.package-data]
+ficcion = ["prompts/*.txt", "kepler.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

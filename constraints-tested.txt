@@ -1,0 +1,14 @@
+# Versiones directas probadas el 10 de septiembre de 2026 con Python 3.12.14.
+# Restringe versiones directas; no es un lock completo de dependencias transitivas.
+langgraph==1.2.11
+langgraph-checkpoint-sqlite==3.1.1
+langchain-core==1.6.2
+pydantic==2.13.5
+httpx==0.28.1
+streamlit==1.63.0
+pytest==9.1.1
+python-dotenv==1.2.3
+langchain-openai==1.6.2
+openai==3.13.0
+tiktoken==0.14.0
+lmstudio==1.5.0

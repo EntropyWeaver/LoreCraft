@@ -1,0 +1,3 @@
+Iria sabe que el pasillo azul está cerrado por mantenimiento.
+El acceso disponible al transmisor es el pasillo verde.
+La llave de la caja de herramientas está en el cajón inferior del banco de trabajo.

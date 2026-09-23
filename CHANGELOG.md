@@ -1,5 +1,11 @@
 # Cambios
 
+## motor_ficcion 0.3.1 · 2026-09-23
+
+- Perfil reproducible `profiles/openai-gpt35.json` para comparar el alias legacy `gpt-3.5-turbo`.
+- La retirada del consentimiento exige ahora dos evidencias distintas: cese de contacto y creación de distancia.
+- Evaluación real de GPT-3.5 Turbo documentada: el alias resolvió a `gpt-3.5-turbo-0125`, falló en roles estructurados y no aumentó la explicitud del actor.
+
 ## motor_ficcion 0.3.0 · 2026-09-23
 
 - Evaluación real reproducible con suites `core` e `intimacy`, rúbrica humana 0–4, señales de rechazo y uso agregado del servidor.

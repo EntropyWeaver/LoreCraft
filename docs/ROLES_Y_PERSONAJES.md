@@ -1,6 +1,6 @@
 # Roles, personajes y comportamiento
 
-Esta guía describe LoreCraft v0.3.0. La instalación editable del [README](../README.md) incluye los cuatro roles; no se instalan como plugins separados.
+Esta guía describe LoreCraft v0.3.1. La instalación editable del [README](../README.md) incluye los cuatro roles; no se instalan como plugins separados.
 
 Un **rol del motor** es una tarea, como dirigir o archivar. Un **personaje** es una ficha de ficción, como Iria. El rol `actor` interpreta al personaje focal del turno; no necesitas crear un nuevo nodo para cada personaje.
 

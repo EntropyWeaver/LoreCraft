@@ -1,6 +1,6 @@
 # Modelos, tokenizer y memoria seleccionable
 
-LoreCraft v0.3.0 separa el estado de la historia del proveedor. Puedes cambiar de modelo entre turnos y conservar la sesión, aunque el cambio puede afectar a la voz y a la continuidad. Para comparar modelos, crea sesiones de evaluación independientes.
+LoreCraft v0.3.1 separa el estado de la historia del proveedor. Puedes cambiar de modelo entre turnos y conservar la sesión, aunque el cambio puede afectar a la voz y a la continuidad. Para comparar modelos, crea sesiones de evaluación independientes.
 
 ## Elegir la ruta de ejecución
 
@@ -8,6 +8,7 @@ LoreCraft v0.3.0 separa el estado de la historia del proveedor. Puedes cambiar d
 |---|---|---|
 | Demo | `ficcion demo` o **Demo de funcionamiento** | Respuestas fijas de prueba; LangGraph y SQLite reales. |
 | OpenAI | `profiles/openai.json` y `OPENAI_API_KEY` | Chat Completions mediante `ChatOpenAI.invoke()`. |
+| OpenAI legacy | `profiles/openai-gpt35.json` y `OPENAI_API_KEY` | Benchmark de GPT-3.5 Turbo; no recomendado para los roles estructurados. |
 | LM Studio | Copia de `profiles/lmstudio.json` con un ID cargado | Chat Completions por HTTP y conteo nativo mediante el SDK. |
 | Otro servidor compatible | Perfil `provider=local`, con contador HF local o `characters` | El mismo transporte HTTP; el servidor debe admitir los mensajes y parámetros enviados. |
 

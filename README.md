@@ -2,7 +2,7 @@
 
 Motor de ficción interactiva con **LangGraph, personajes con voz propia y memoria persistente seleccionable**. Incluye un panel Streamlit, una interfaz de terminal, modelos locales intercambiables y OpenAI mediante LangChain.
 
-La base es `motor_ficcion` **v0.3.0**. LoreCraft es el nombre del proyecto; el paquete Python sigue siendo `motor-ficcion` y el comando, `python -m ficcion`. El motor conserva la agencia del jugador mediante instrucciones, una salvaguarda de retirada del consentimiento y validaciones; además filtra en Python qué conocimientos puede recibir cada personaje.
+La base es `motor_ficcion` **v0.3.1**. LoreCraft es el nombre del proyecto; el paquete Python sigue siendo `motor-ficcion` y el comando, `python -m ficcion`. El motor conserva la agencia del jugador mediante instrucciones, una salvaguarda de retirada del consentimiento y validaciones; además filtra en Python qué conocimientos puede recibir cada personaje.
 
 El ejemplo es el taller de la estación Kepler durante un apagón. Iria, ingeniera de 34 años, tiene una voz propia, conocimientos y un objetivo inmediato. Su intervención deja la siguiente decisión al jugador.
 
@@ -73,6 +73,8 @@ El diagnóstico consulta `/models` y prueba el contador; **no genera texto**. `r
 El perfil de ejemplo usa `gpt-4o-2024-08-06`, su ventana declarada de 128 000 tokens y una reserva adicional de 1 024 tokens. El contador LangChain/tiktoken coincidió con `usage.prompt_tokens` en las 45 llamadas de la evaluación final. Puedes cambiar el identificador en `profiles/openai.json` o en el panel. El proveedor OpenAI usa `ChatOpenAI.invoke()` con los mensajes construidos por LangChain; la inferencia local conserva su adaptador HTTP.
 
 La [documentación oficial de GPT-4o](https://developers.openai.com/api/docs/models/gpt-4o), consultada el 23 de septiembre de 2026, incluye la snapshot del ejemplo. La disponibilidad para tu cuenta se comprueba con `doctor` y una generación real. Para probar otro identificador, revisa su compatibilidad con Chat Completions, los parámetros enviados y el contador; cambiar el nombre no garantiza que cualquier modelo funcione con este adaptador.
+
+`profiles/openai-gpt35.json` conserva un benchmark del alias legacy `gpt-3.5-turbo`. En la prueba del 23 de septiembre de 2026 el servidor lo resolvió a `gpt-3.5-turbo-0125`: falló dos veces en el segundo turno por referencias inválidas del archivista, confundió al jugador con Dante y no generó más explicitud al aislar el actor. Se mantiene para repetir comparaciones, no como perfil recomendado.
 
 En el panel elige **OpenAI (LangChain)**. Para evaluar desde cero, crea una historia nueva con ese proveedor y evita que respuestas de la demo condicionen el historial. La personalidad se transmite mediante ficha, contexto y ejemplos; esto no entrena el modelo ni garantiza reproducir la experiencia de ChatGPT con ese nombre de modelo.
 
@@ -196,7 +198,7 @@ El cargador de `.env` lee exclusivamente `OPENAI_API_KEY` y `FICTION_API_KEY`. L
 
 ## Personalizar roles, personajes y comportamiento
 
-Los cuatro roles vienen incluidos al instalar el proyecto. Cada uno es una tarea del grafo con su propio prompt y sus propios datos de entrada. En v0.3.0 **un mismo modelo atiende los cuatro roles**; no hay una opción de configuración para asignar un modelo diferente a cada uno.
+Los cuatro roles vienen incluidos al instalar el proyecto. Cada uno es una tarea del grafo con su propio prompt y sus propios datos de entrada. En v0.3.1 **un mismo modelo atiende los cuatro roles**; no hay una opción de configuración para asignar un modelo diferente a cada uno.
 
 | Quieres cambiar… | Edita… | Se aplica a… |
 |---|---|---|

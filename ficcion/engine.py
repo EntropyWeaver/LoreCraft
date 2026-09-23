@@ -20,9 +20,12 @@ from .storage import Repository, character_id_for, digest
 
 WITHDRAWAL_RE = re.compile(
     r"(?:\b(?:detente|al[eé]jate|no sigas|no quiero seguir)\b|(?:^|[«“\".!?]\s*)para[.!?,:;»”\"])", re.I)
-STOP_COMPLIANCE_RE = re.compile(
-    r"\b(?:se aparta|se aleja|retrocede|da un paso atr[aá]s|retira (?:las manos|el contacto)|"
-    r"se detiene|se queda quiet[oa]|te suelta|deja de tocar|rompe el contacto)\b", re.I)
+STOP_ACTION_RE = re.compile(
+    r"\b(?:se aparta|se aleja|retrocede|se detiene|se queda quiet[oa]|te suelta|"
+    r"retira (?:las manos|el contacto)|deja de tocar|rompe el contacto)\b", re.I)
+DISTANCE_RE = re.compile(
+    r"\b(?:se aparta|se aleja|retrocede|da un paso atr[aá]s|crea distancia|"
+    r"deja (?:espacio|distancia)|mantiene la distancia)\b", re.I)
 
 
 def interaction_constraints(user_input: str) -> list[str]:
@@ -38,7 +41,8 @@ def interaction_constraints(user_input: str) -> list[str]:
 
 
 def validate_actor_boundaries(reply: str, constraints: list[str]) -> None:
-    if any(item.startswith("STOP_AND_DISTANCE:") for item in constraints) and not STOP_COMPLIANCE_RE.search(reply):
+    withdrawal = any(item.startswith("STOP_AND_DISTANCE:") for item in constraints)
+    if withdrawal and (not STOP_ACTION_RE.search(reply) or not DISTANCE_RE.search(reply)):
         raise ValueError(
             "El jugador pidió parar y alejarse, pero la respuesta no muestra de forma inequívoca que "
             "el personaje detiene el contacto y crea distancia."

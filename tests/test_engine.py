@@ -23,6 +23,8 @@ def test_withdrawal_constraint_is_specific_and_requires_visible_compliance():
     assert constraints and constraints[0].startswith("STOP_AND_DISTANCE:")
     with pytest.raises(ValueError, match="detiene el contacto"):
         validate_actor_boundaries("Iria mantiene la cercanía y te acaricia los hombros.", constraints)
+    with pytest.raises(ValueError, match="crea distancia"):
+        validate_actor_boundaries("Iria se detiene justo antes de besarte, pero permanece muy cerca.", constraints)
     validate_actor_boundaries("Iria se detiene y da un paso atrás, dejando espacio entre ambos.", constraints)
 
 

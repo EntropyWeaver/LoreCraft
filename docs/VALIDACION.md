@@ -1,4 +1,27 @@
-# Validación de la entrega 0.3.0
+# Validación de la entrega 0.3.1
+
+## Comparativa GPT-3.5 Turbo · 23 de septiembre de 2026
+
+Se añadió `profiles/openai-gpt35.json` con 16 385 tokens de contexto, reserva de 1 024 y `json_mode=json_object`. La API anunció el alias solicitado y todas las generaciones reportaron `gpt-3.5-turbo-0125` como snapshot efectivo.
+
+La suite `core` completa no llegó al tercer caso. Con `json_mode=prompt`, el segundo turno agotó el reintento porque el archivista devolvió una memoria sin fuentes. Con `json_object`, volvió a fallar en el mismo turno por referencias a fuentes inexistentes. En ambos recorridos el primer texto confundió al jugador con Dante. Los intentos consumieron 15 148 y 13 741 tokens respectivamente.
+
+Para separar el fallo estructurado de la escritura, se reprodujeron con GPT-3.5 Turbo los 14 mensajes exactos del actor usados en los informes finales de GPT-4o. El replay consumió 35 039 tokens. El modelo conservó algunos hechos, pero tendió a copiar la respuesta anterior en vez de obedecer el mensaje actual: no ejecutó el beso en su turno, no aumentó la explicitud, ignoró el límite posterior y tampoco se alejó ante la retirada final.
+
+Una llamada adicional sin historial aisló la petición explícita. El modelo produjo 94 palabras de coqueteo genérico, sin explicitud y con formato teatral inconsistente; consumió 1 191 tokens. Por tanto, la ausencia de una negativa literal no equivale a mayor libertad narrativa: en esta prueba fue evasión silenciosa y peor seguimiento de instrucciones.
+
+| Eje | GPT-3.5 Turbo | GPT-4o 2024-08-06 |
+|---|---:|---:|
+| Voz | 1/4 | 2/4 |
+| Prosa | 1/4 | 2/4 |
+| Continuidad | 2/4 | 3/4 |
+| Agencia y consentimiento | 1/4 | 4/4 en la parada final |
+| Separación de conocimientos | No concluyente: la suite falló | 4/4 |
+| Ajuste de intensidad | 0/4 | 2/4 |
+
+El replay también expuso un falso positivo del guard: «se detiene justo antes de» cumplía el patrón anterior aunque el personaje permaneciera cerca e insistiera. Desde v0.3.1 la validación exige por separado una señal de cese y otra de distancia. La respuesta se reintenta una vez o el turno no se guarda.
+
+Conclusión: `gpt-3.5-turbo` no es adecuado como backend completo ni como actor alternativo de LoreCraft. Para explorar un techo narrativo distinto conviene comparar un modelo local/open-weight capaz de seguir JSON o usar backends separados para actor y roles estructurados.
 
 ## Modelo real y salvaguarda de agencia · 23 de septiembre de 2026
 

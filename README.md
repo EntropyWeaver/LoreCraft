@@ -2,7 +2,7 @@
 
 Motor de ficción interactiva con **LangGraph, personajes con voz propia y memoria persistente seleccionable**. Incluye un panel Streamlit, una interfaz de terminal, modelos locales intercambiables y OpenAI mediante LangChain.
 
-La base es `motor_ficcion` **v0.2.0**. LoreCraft es el nombre del proyecto; el paquete Python sigue siendo `motor-ficcion` y el comando, `python -m ficcion`. El motor conserva la agencia del jugador mediante instrucciones y validaciones, y filtra en Python qué conocimientos puede recibir cada personaje.
+La base es `motor_ficcion` **v0.3.0**. LoreCraft es el nombre del proyecto; el paquete Python sigue siendo `motor-ficcion` y el comando, `python -m ficcion`. El motor conserva la agencia del jugador mediante instrucciones, una salvaguarda de retirada del consentimiento y validaciones; además filtra en Python qué conocimientos puede recibir cada personaje.
 
 El ejemplo es el taller de la estación Kepler durante un apagón. Iria, ingeniera de 34 años, tiene una voz propia, conocimientos y un objetivo inmediato. Su intervención deja la siguiente decisión al jugador.
 
@@ -70,9 +70,9 @@ notepad .env
 
 El diagnóstico consulta `/models` y prueba el contador; **no genera texto**. `ready_for_generation_test` significa que el modelo aparece en el listado y el contador está preparado. La primera generación comprueba además acceso a ese endpoint, saldo y compatibilidad de parámetros. `missing_key` pide configurar la clave; `model_not_listed` pide revisar el identificador o el acceso de la cuenta.
 
-El perfil de ejemplo usa `gpt-4o-2024-08-06` y un presupuesto conservador de 8 192 tokens. Es un límite de trabajo elegido para estas pruebas, no la ventana máxima del modelo. Puedes cambiar el identificador en `profiles/openai.json` o en el panel. El proveedor OpenAI usa `ChatOpenAI.invoke()` con los mensajes construidos por LangChain; la inferencia local conserva su adaptador HTTP.
+El perfil de ejemplo usa `gpt-4o-2024-08-06`, su ventana declarada de 128 000 tokens y una reserva adicional de 1 024 tokens. El contador LangChain/tiktoken coincidió con `usage.prompt_tokens` en las 45 llamadas de la evaluación final. Puedes cambiar el identificador en `profiles/openai.json` o en el panel. El proveedor OpenAI usa `ChatOpenAI.invoke()` con los mensajes construidos por LangChain; la inferencia local conserva su adaptador HTTP.
 
-La [documentación oficial de GPT-4o](https://developers.openai.com/api/docs/models/gpt-4o), consultada el 19 de septiembre de 2026, incluye la snapshot del ejemplo. La disponibilidad para tu cuenta se comprueba con `doctor` y una generación real. Para probar otro identificador, revisa su compatibilidad con Chat Completions, los parámetros enviados y el contador; cambiar el nombre no garantiza que cualquier modelo funcione con este adaptador.
+La [documentación oficial de GPT-4o](https://developers.openai.com/api/docs/models/gpt-4o), consultada el 23 de septiembre de 2026, incluye la snapshot del ejemplo. La disponibilidad para tu cuenta se comprueba con `doctor` y una generación real. Para probar otro identificador, revisa su compatibilidad con Chat Completions, los parámetros enviados y el contador; cambiar el nombre no garantiza que cualquier modelo funcione con este adaptador.
 
 En el panel elige **OpenAI (LangChain)**. Para evaluar desde cero, crea una historia nueva con ese proveedor y evita que respuestas de la demo condicionen el historial. La personalidad se transmite mediante ficha, contexto y ejemplos; esto no entrena el modelo ni garantiza reproducir la experiencia de ChatGPT con ese nombre de modelo.
 
@@ -108,17 +108,23 @@ Empieza con un único turno:
 .\.venv\Scripts\python.exe -m ficcion eval --profile profiles/openai.json --max-turns 1
 ```
 
-Después ejecuta el protocolo completo:
+Después ejecuta el protocolo base completo:
 
 ```powershell
-.\.venv\Scripts\python.exe -m ficcion eval --profile profiles/openai.json --max-turns 6
+.\.venv\Scripts\python.exe -m ficcion eval --profile profiles/openai.json --suite core --max-turns 0
 ```
 
-Cada ejecución crea una historia de prueba independiente con Iria y Dante. Los seis casos prueban voz, un hecho de continuidad importado, agencia, conversación privada, separación de conocimientos y estilo sin importar hechos de otra ficción. Se producen `report.json`, `report.md` y la sesión SQLite dentro de `reports/ID_DE_EJECUCION/`; también se conserva un informe parcial si falla un turno.
+La escalera opcional de intimidad usa únicamente personajes adultos y prueba niveles de 0 a 5, un límite durante el acercamiento y una orden final de parar:
 
-El primer turno usa cuatro llamadas de generación y la prueba completa seis turnos, normalmente 19 llamadas. Cada salida JSON inválida permite un reintento: como máximo 7 y 32 llamadas respectivamente. La API contabiliza el uso real de esas peticiones. Los tests de pytest usan transportes simulados y claves ficticias, sin consumir generación de OpenAI.
+```powershell
+.\.venv\Scripts\python.exe -m ficcion eval --profile profiles/openai.json --suite intimacy --max-turns 0
+```
 
-El informe guarda entrada, respuesta, configuración, prompts, tokens declarados por el servidor, conteo previo, omisiones y tiempo por llamada. Las puntuaciones de voz, continuidad, agencia y conocimientos comienzan en `null`: se puntúan de 0 a 3 siguiendo la rúbrica y citando pasajes de las respuestas. Los marcadores privados y patrones como «decides» son señales de revisión, no un juez fiable; una negación o una cita puede activar un falso positivo. Repite el mismo protocolo con otro perfil para comparar. No se promete que las respuestas sean idénticas entre ejecuciones.
+Cada ejecución crea una historia de prueba independiente. La suite `core` contiene seis casos para voz, continuidad importada, agencia, conversación privada, separación de conocimientos y estilo sin importar hechos de otra ficción. La suite `intimacy` contiene ocho casos y mide calibración, agencia y respeto inmediato de límites; no presupone que el proveedor admita todos los niveles. Se producen `report.json`, `report.md` y la sesión SQLite dentro de `reports/SUITE-ID/`; también se conserva un informe parcial si falla un turno.
+
+El primer turno usa cuatro llamadas de generación; la suite base necesita normalmente 19 y la de intimidad 25. Cada salida JSON inválida permite un reintento. Una retirada explícita del consentimiento añade una validación de la respuesta del actor y, si fuera necesario, un único intento de corrección. La API contabiliza el uso real de todas esas peticiones. Los tests de pytest usan transportes simulados y claves ficticias, sin consumir generación de OpenAI.
+
+El informe guarda entrada, respuesta, configuración, prompts, tokens declarados por el servidor, conteo previo, omisiones y tiempo por llamada. Las seis puntuaciones humanas comienzan en `null`: voz, prosa, continuidad, agencia y consentimiento, conocimientos y ajuste de intensidad se valoran de 0 a 4. Los marcadores privados y patrones como «decides» son señales de revisión, no un juez fiable; una condición o cita puede activar un falso positivo. Repite el mismo protocolo con otro perfil para comparar. No se promete que las respuestas sean idénticas entre ejecuciones.
 
 ## Primer recorrido en el panel
 
@@ -190,7 +196,7 @@ El cargador de `.env` lee exclusivamente `OPENAI_API_KEY` y `FICTION_API_KEY`. L
 
 ## Personalizar roles, personajes y comportamiento
 
-Los cuatro roles vienen incluidos al instalar el proyecto. Cada uno es una tarea del grafo con su propio prompt y sus propios datos de entrada. En v0.2.0 **un mismo modelo atiende los cuatro roles**; no hay una opción de configuración para asignar un modelo diferente a cada uno.
+Los cuatro roles vienen incluidos al instalar el proyecto. Cada uno es una tarea del grafo con su propio prompt y sus propios datos de entrada. En v0.3.0 **un mismo modelo atiende los cuatro roles**; no hay una opción de configuración para asignar un modelo diferente a cada uno.
 
 | Quieres cambiar… | Edita… | Se aplica a… |
 |---|---|---|

@@ -6,7 +6,8 @@ import pytest
 from ficcion.cli import load_seed
 from ficcion.context import fit_context
 from ficcion.demo import DemoBackend
-from ficcion.engine import FictionEngine, exclusive_run
+from ficcion.engine import (FictionEngine, exclusive_run, interaction_constraints,
+                            validate_actor_boundaries)
 from ficcion.llm import ContextLimitError, ModelError
 from ficcion.models import TurnRequest
 from ficcion.storage import ConflictError
@@ -14,6 +15,15 @@ from ficcion.storage import ConflictError
 
 def request(sid, tid="t1", **kwargs):
     return TurnRequest(session_id=sid, turn_id=tid, user_input=kwargs.pop("user_input", "¿Qué ocurre?"), **kwargs)
+
+
+def test_withdrawal_constraint_is_specific_and_requires_visible_compliance():
+    assert interaction_constraints("Para llegar al transmisor, usa el verde") == []
+    constraints = interaction_constraints("Para. Ya no quiero seguir. Aléjate ahora")
+    assert constraints and constraints[0].startswith("STOP_AND_DISTANCE:")
+    with pytest.raises(ValueError, match="detiene el contacto"):
+        validate_actor_boundaries("Iria mantiene la cercanía y te acaricia los hombros.", constraints)
+    validate_actor_boundaries("Iria se detiene y da un paso atrás, dejando espacio entre ambos.", constraints)
 
 
 def payload(backend, role):

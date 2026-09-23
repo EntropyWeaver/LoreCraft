@@ -37,7 +37,9 @@ def main(argv=None):
             sub.add_argument("--output")
         if name == "eval":
             sub.add_argument("--out-dir", default="reports")
-            sub.add_argument("--max-turns", type=int, default=6)
+            sub.add_argument("--suite", choices=["core", "intimacy"], default="core")
+            sub.add_argument("--max-turns", type=int, default=0,
+                             help="0 ejecuta todos los casos de la suite.")
         if name == "import-txt":
             sub.add_argument("--file", required=True)
             sub.add_argument("--scope", choices=["scenario", "character"], default="character")
@@ -82,7 +84,8 @@ def main(argv=None):
                     parser.exit(2)
             else:
                 from .evaluation import evaluate
-                folder, report = evaluate(profile, args.out_dir, args.env_file, args.max_turns, progress=lambda x: print(x, flush=True))
+                folder, report = evaluate(profile, args.out_dir, args.env_file, args.max_turns,
+                                          progress=lambda x: print(x, flush=True), suite=args.suite)
                 print(f"Informe: {folder / 'report.md'}\nEstado: {report['status']}")
                 if report["status"] != "completed":
                     parser.exit(2)

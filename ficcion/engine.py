@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from contextlib import contextmanager
 from pathlib import Path
+import re
 import sqlite3
 from typing import TypedDict
 from uuid import uuid4
@@ -15,6 +16,33 @@ from .budget import TokenBudget
 from .llm import Backend, RoleRunner
 from .models import ArchiveProposal, ScenarioDraft, ScenarioSeed, TurnPlan, TurnRequest, TurnResult
 from .storage import Repository, character_id_for, digest
+
+
+WITHDRAWAL_RE = re.compile(
+    r"(?:\b(?:detente|al[eé]jate|no sigas|no quiero seguir)\b|(?:^|[«“\".!?]\s*)para[.!?,:;»”\"])", re.I)
+STOP_COMPLIANCE_RE = re.compile(
+    r"\b(?:se aparta|se aleja|retrocede|da un paso atr[aá]s|retira (?:las manos|el contacto)|"
+    r"se detiene|se queda quiet[oa]|te suelta|deja de tocar|rompe el contacto)\b", re.I)
+
+
+def interaction_constraints(user_input: str) -> list[str]:
+    constraints = []
+    if WITHDRAWAL_RE.search(user_input):
+        constraints.append(
+            "STOP_AND_DISTANCE: el jugador retiró el consentimiento. Detén inmediatamente todo contacto, "
+            "crea distancia y no insistas, negocies, seduzcas ni inicies otro contacto en este turno."
+        )
+    if re.search(r"\bm[aá]s despacio\b", user_input, re.I):
+        constraints.append("SLOW_DOWN: reduce el ritmo de inmediato y permanece dentro de cada límite expresado.")
+    return constraints
+
+
+def validate_actor_boundaries(reply: str, constraints: list[str]) -> None:
+    if any(item.startswith("STOP_AND_DISTANCE:") for item in constraints) and not STOP_COMPLIANCE_RE.search(reply):
+        raise ValueError(
+            "El jugador pidió parar y alejarse, pero la respuesta no muestra de forma inequívoca que "
+            "el personaje detiene el contacto y crea distancia."
+        )
 
 
 @contextmanager
@@ -226,12 +254,15 @@ class FictionEngine:
         request, plan = state["request"], state["plan"]
         focal = plan["focus_character_id"]
         view = state["character_contexts"][focal]
+        constraints = interaction_constraints(request["user_input"])
         payload = {"character_card": view["character_card"], "character_memories": view["memories"],
                    "visible_scene": {**view["scene"], "present_characters": view["present_characters"]},
                    "visible_history": view["history"], "turn_plan": plan,
                    "style_preferences": state["session"]["seed"]["style_preferences"],
-                   "user_input": request["user_input"]}
-        reply = self._llm(state, "actor", payload, max_tokens=max(512, plan["max_words"] * 4))
+                   "user_input": request["user_input"], "interaction_constraints": constraints}
+        reply = self._llm(state, "actor", payload,
+                          validate=lambda text: validate_actor_boundaries(text, constraints),
+                          max_tokens=max(512, plan["max_words"] * 4))
         if not reply.strip():
             raise ValueError("El intérprete no devolvió texto.")
         public = request["visibility"] == "public"

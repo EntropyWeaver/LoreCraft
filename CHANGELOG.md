@@ -1,5 +1,13 @@
 # Cambios
 
+## motor_ficcion 0.3.0 · 2026-09-23
+
+- Evaluación real reproducible con suites `core` e `intimacy`, rúbrica humana 0–4, señales de rechazo y uso agregado del servidor.
+- El intérprete prioriza el mensaje actual, evita relleno genérico y trata los límites del jugador como restricciones del turno.
+- Una retirada explícita del consentimiento exige una detención y distancia visibles; la salida se corrige una vez o el turno falla sin guardarse.
+- Perfil OpenAI ajustado a 128 000 tokens para `gpt-4o-2024-08-06`, con conteo tiktoken contrastado contra el servidor.
+- 49 pruebas superadas y una omitida por depender de un servicio externo.
+
 ## LoreCraft · publicación inicial del repositorio · 2026-09-19
 
 - Importación de `motor_ficcion` v0.2.0 en `EntropyWeaver/LoreCraft`.

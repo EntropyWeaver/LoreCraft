@@ -186,7 +186,7 @@ class RoleRunner:
         if self.token_budget:
             max_tokens = self.token_budget.output_limit(role, max_tokens)
         last_error = None
-        for attempt in range(2 if output_type else 1):
+        for attempt in range(2 if output_type or validate else 1):
             if self.token_budget:
                 messages, self.last_budget_report = self.token_budget.fit(role, payload, make_messages, max_tokens, repairs)
             if sum(len(m["content"]) for m in messages) > self.max_prompt_chars:
@@ -220,9 +220,12 @@ class RoleRunner:
             except (ValueError, ValidationError) as exc:
                 last_error = exc
                 # El modelo solo recibe su salida anterior, nunca contextos de otros roles.
+                instruction = ("Corrige exclusivamente el objeto JSON según el contrato. Error: "
+                               if output_type else
+                               "Reescribe exclusivamente la intervención narrativa y corrige este incumplimiento: ")
                 repairs = [
                     {"role": "assistant", "content": raw[:4000]},
-                    {"role": "user", "content": "Corrige exclusivamente el objeto JSON según el contrato. Error: " + str(exc)[:1500]}
+                    {"role": "user", "content": instruction + str(exc)[:1500]}
                 ]
                 messages = messages[:2] + repairs
         raise ModelError(f"Salida inválida de {role} tras un reintento: {last_error}")

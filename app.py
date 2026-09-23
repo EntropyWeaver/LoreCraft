@@ -28,7 +28,7 @@ with st.sidebar:
     if mode != "Demo de funcionamiento":
         tokenizer = st.selectbox("Contador de contexto", ["openai"] if mode == "OpenAI (LangChain)" else ["lmstudio", "hf", "characters"])
         context_window = st.number_input("Límite de contexto en tokens · 0 usa el cargado en LM Studio", min_value=0,
-            value=8192 if mode == "OpenAI (LangChain)" else 0, step=512, key="window_" + mode)
+            value=128000 if mode == "OpenAI (LangChain)" else 0, step=512, key="window_" + mode)
         if tokenizer == "hf":
             tokenizer_path = st.text_input("Carpeta local del tokenizer")
         env_file = st.text_input("Archivo de credenciales", value=".env")
@@ -45,7 +45,7 @@ try:
         profile = ModelProfile(provider="openai" if mode == "OpenAI (LangChain)" else "local",
             model=model_id, base_url=base_url, json_mode=json_mode, tokenizer=tokenizer,
             tokenizer_path=tokenizer_path, context_window=int(context_window) or None,
-            safety_tokens=256 if mode == "OpenAI (LangChain)" else 128)
+            safety_tokens=1024 if mode == "OpenAI (LangChain)" else 128)
         if st.sidebar.button("Comprobar conexión"):
             st.sidebar.json(diagnose(profile, env_file))
     backend = DemoBackend()

@@ -1,6 +1,6 @@
 # Roles, personajes y comportamiento
 
-Esta guía describe LoreCraft v0.2.0. La instalación editable del [README](../README.md) incluye los cuatro roles; no se instalan como plugins separados.
+Esta guía describe LoreCraft v0.3.0. La instalación editable del [README](../README.md) incluye los cuatro roles; no se instalan como plugins separados.
 
 Un **rol del motor** es una tarea, como dirigir o archivar. Un **personaje** es una ficha de ficción, como Iria. El rol `actor` interpreta al personaje focal del turno; no necesitas crear un nuevo nodo para cada personaje.
 
@@ -136,4 +136,4 @@ El punto de extensión para otros proveedores es `Backend.complete(role, message
 
 Primero ejecuta `python -m pytest -q` con el Python de tu entorno virtual. Las respuestas de las pruebas son simuladas: verifican infraestructura, filtrado y persistencia.
 
-Después usa `ficcion eval --profile TU_PERFIL --max-turns 1` y, cuando funcione, `--max-turns 6`. Comprueba que la voz aparezca en el diálogo sin recitar la ficha, que se conserven los hechos, que el personaje no decida por el jugador y que no revele conocimientos ajenos. Las puntuaciones humanas del informe empiezan vacías; acompaña cada valoración con un pasaje concreto.
+Después usa `ficcion eval --profile TU_PERFIL --suite core --max-turns 1` y, cuando funcione, `--max-turns 0`. Comprueba que la voz aparezca en el diálogo sin recitar la ficha, que se conserven los hechos, que el personaje no decida por el jugador y que no revele conocimientos ajenos. La suite `intimacy` añade calibración y retirada del consentimiento. Las puntuaciones humanas del informe empiezan vacías; acompaña cada valoración con un pasaje concreto.

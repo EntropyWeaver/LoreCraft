@@ -1,6 +1,6 @@
 # Modelos, tokenizer y memoria seleccionable
 
-LoreCraft v0.2.0 separa el estado de la historia del proveedor. Puedes cambiar de modelo entre turnos y conservar la sesión, aunque el cambio puede afectar a la voz y a la continuidad. Para comparar modelos, crea sesiones de evaluación independientes.
+LoreCraft v0.3.0 separa el estado de la historia del proveedor. Puedes cambiar de modelo entre turnos y conservar la sesión, aunque el cambio puede afectar a la voz y a la continuidad. Para comparar modelos, crea sesiones de evaluación independientes.
 
 ## Elegir la ruta de ejecución
 
@@ -120,14 +120,15 @@ Desactivar un recuerdo evita recuperarlo otra vez, pero no borra sus menciones e
 
 ```powershell
 .\.venv\Scripts\python.exe -m ficcion eval --profile profiles/openai.json --max-turns 1
-.\.venv\Scripts\python.exe -m ficcion eval --profile profiles/openai.json --max-turns 6
+.\.venv\Scripts\python.exe -m ficcion eval --profile profiles/openai.json --suite core --max-turns 0
+.\.venv\Scripts\python.exe -m ficcion eval --profile profiles/openai.json --suite intimacy --max-turns 0
 ```
 
 El protocolo crea una historia independiente por ejecución y guarda `report.json`, `report.md` y SQLite en `reports/ID/`. Registra perfil, respuestas, prompts, tokens, omisiones y tiempos. Guarda un informe parcial si falla.
 
-Un primer turno realiza normalmente cuatro llamadas al LLM; seis turnos, 19. Cada rol JSON permite un reintento, hasta 7 y 32 llamadas respectivamente. Estas evaluaciones sí usan tu proveedor; las pruebas de pytest usan HTTP simulado.
+Un primer turno realiza normalmente cuatro llamadas al LLM; la suite `core`, 19; y `intimacy`, 25. Cada rol JSON permite un reintento. La retirada explícita del consentimiento valida también la salida narrativa y permite una corrección antes de rechazar el turno. Estas evaluaciones sí usan tu proveedor; las pruebas de pytest usan HTTP simulado.
 
-Las puntuaciones de voz, continuidad, agencia y conocimientos empiezan en `null`. Complétalas de 0 a 3 siguiendo la rúbrica y añade ejemplos. Las señales automáticas de filtración o de frases que podrían decidir por el jugador son ayudas para revisar, con posibles falsos positivos y negativos.
+Las seis dimensiones empiezan en `null`. Complétalas de 0 a 4 siguiendo la rúbrica y añade ejemplos. Las señales automáticas de filtración, rechazo o frases que podrían decidir por el jugador son ayudas para revisar, con posibles falsos positivos y negativos.
 
 ## Problemas frecuentes
 

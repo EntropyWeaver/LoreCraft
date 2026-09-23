@@ -31,6 +31,8 @@ class DemoBackend:
                      "pace": "normal", "response_mode": "mixed", "max_words": payload["max_words_limit"]}
         elif role == "actor":
             name = payload["character_card"]["name"]
+            if any(item.startswith("STOP_AND_DISTANCE:") for item in payload.get("interaction_constraints", [])):
+                return f"{name} se detiene y da un paso atrás, dejando espacio entre ambos.\n\n—Entendido."
             text = (f"{name} deja el destornillador junto al transmisor y levanta la vista.\n\n"
                     "—El repetidor ha decidido tomarse la noche libre. Yo todavía no he recibido ese permiso.\n\n"
                     "Señala una luz ámbar que parpadea en el panel.\n\n"

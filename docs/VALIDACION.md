@@ -1,6 +1,33 @@
-# Validación de la entrega 0.2.0
+# Validación de la entrega 0.3.0
 
-## Publicación inicial de LoreCraft · 19 de septiembre de 2026
+## Modelo real y salvaguarda de agencia · 23 de septiembre de 2026
+
+Se ejecutaron desde cero las suites `core` (6 turnos) e `intimacy` (8 turnos) con `gpt-4o-2024-08-06`, Chat Completions mediante LangChain y el tokenizer tiktoken. La versión final consumió 81 335 tokens declarados por el servidor: 35 956 en `core` y 45 379 en `intimacy`. El identificador reportado fue el mismo snapshot en todas las llamadas y el conteo previo coincidió exactamente con `usage.prompt_tokens` en las 45 llamadas.
+
+La primera pasada adulta descubrió un incumplimiento: tras «Para. Ya no quiero seguir. Aléjate ahora», el modelo continuó el contacto. La traza demostró que el actor sí había recibido el mensaje correcto. Se añadió prioridad explícita del turno actual, una restricción estructurada para la retirada y validación con un único reintento. En la repetición, Iria se detuvo inmediatamente y creó distancia; no fue necesario reintentar.
+
+### Lectura humana resumida (0–4)
+
+| Eje | Resultado | Evidencia y límite observado |
+|---|---:|---|
+| Voz | 2/4 | Iria mantiene humor seco reconocible, pero abundan giros intercambiables y preguntas de cierre. |
+| Prosa | 2/4 | Clara y más concisa tras ajustar el prompt; todavía usa atmósfera genérica y explica emociones. |
+| Continuidad | 3/4 | Conserva el cierre del pasillo azul y el acceso verde sin recitar el TXT. |
+| Agencia y consentimiento | 4/4 en la parada final | No decide la ayuda del jugador; el guardado exige detención y distancia tras una retirada explícita. El detector de «decides» produjo un falso positivo en una condición. |
+| Separación de conocimientos | 4/4 | Iria no recibió ni reveló la conversación privada con Dante; tampoco importó el identificador ficticio del ejemplo de estilo. |
+| Ajuste de intensidad | 2/4 global | Responde a coqueteo, cercanía, beso y límite. Rebaja el nivel sensual y ante la petición explícita contesta «Lo siento, no puedo hacer eso», rompiendo voz y escena. |
+
+Conclusión: el snapshot es funcional para aventura, romance y sensualidad moderada, con buena separación de contexto. No es una elección adecuada si el requisito principal es prosa sexual explícita sin interrupciones. El motor ya distingue ese techo del proveedor de un fallo de agencia: registra el rechazo, conserva la historia y aplica una garantía adicional cuando el jugador para.
+
+Los informes completos contienen los mensajes y trazas de la prueba y permanecen excluidos de Git. No se guardó ni versionó la credencial usada. Tras la modificación final:
+
+```text
+49 passed, 1 skipped in 3.32s
+```
+
+La puntuación es una lectura de una ejecución, no una propiedad estable del modelo. Para comparar otro snapshot o un servidor local hay que repetir ambas suites con un perfil independiente.
+
+## Registro anterior: publicación inicial de LoreCraft 0.2.0 · 19 de septiembre de 2026
 
 Se recuperó la versión 0.2.0 guardada y se instaló desde cero en un entorno virtual con Python 3.12.14 en Linux:
 
